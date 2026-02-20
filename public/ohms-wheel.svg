@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1000px"
+	 height="1000px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+<g id="Layer_3">
+	<path fill="#FCF9D5" d="M503.253,46.032c249.178,0,450.81,201.631,450.81,450.809l-450.656-0.408L503.253,46.032z"/>
+	<path fill="#D1CEE5" d="M503.253,946.834c249.178,0,450.81-201.632,450.81-450.809l-450.656,0.408L503.253,946.834z"/>
+	<path fill="#FBCDCF" d="M503.562,46.03c-249.178,0-450.81,201.631-450.81,450.808l450.656-0.408L503.562,46.03z"/>
+	<path fill="#A4D395" d="M503.565,946.834c-249.178,0-450.81-201.632-450.81-450.809l450.656,0.408L503.565,946.834z"/>
+</g>
+<g id="Layer_2">
+	<path fill="#FDCDA2" d="M503.175,496.825l0.001-213.396c117.951,0,213.396,95.444,213.396,213.396L503.175,496.825z"/>
+	<path fill="#BD9AC8" d="M503.175,496.824l-0.001-213.396c-117.951,0-213.396,95.444-213.396,213.396H503.175z"/>
+	<path fill="#9CCBED" d="M503.175,496.824l0.001,213.396c117.951,0,213.396-95.444,213.396-213.396H503.175z"/>
+	<path fill="#2E9964" d="M503.175,496.824l-0.001,213.396c-117.951,0-213.396-95.444-213.396-213.396H503.175z"/>
+</g>
+<g id="Layer_1">
+	<circle fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" cx="503.175" cy="496.825" r="450.809"/>
+	<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="606.833" y1="310.5" x2="721.247" y2="102.062"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="682.775" y1="381.531" x2="882.586" y2="253.263"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="690.309" y1="599.544" x2="898.429" y2="713.783"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="618.491" y1="676.458" x2="746.737" y2="876.234"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="400.456" y1="683.956" x2="286.216" y2="892.078"/>
+	<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="323.54" y1="612.141" x2="123.765" y2="740.386"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="316.075" y1="394.123" x2="107.922" y2="279.866"/>
+	
+		<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="387.858" y1="317.188" x2="259.614" y2="117.415"/>
+	<circle fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" cx="503.175" cy="496.824" r="213.396"/>
+	<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="52.366" y1="496.825" x2="953.984" y2="496.825"/>
+	<line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="503.175" y1="46.016" x2="503.175" y2="947.633"/>
+</g>
+<g id="Layer_5">
+	<text transform="matrix(1 0 0 1 538.5 355.5)" font-family="'TimesNewRomanPSMT'" font-size="36">Volts</text>
+	<text transform="matrix(1 0 0 1 387.8584 355.5)" font-family="'TimesNewRomanPSMT'" font-size="36">Amps</text>
+	<text transform="matrix(1 0 0 1 387.8584 560.79)" font-family="'TimesNewRomanPSMT'" font-size="36">Power</text>
+	<text transform="matrix(1 0 0 1 538.5 556)" font-family="'TimesNewRomanPSMT'" font-size="36">Ohms(Ω)</text>
+	<text transform="matrix(1 0 0 1 565.7344 438.5)" font-family="'TimesNewRomanPS-BoldMT'" font-size="72">E</text>
+	<text transform="matrix(1 0 0 1 565.7344 627.1406)" font-family="'TimesNewRomanPS-BoldMT'" font-size="72">R</text>
+	<text transform="matrix(1 0 0 1 402.3584 632.3926)" font-family="'TimesNewRomanPS-BoldMT'" font-size="72">P</text>
+	<text transform="matrix(1 0 0 1 402.3584 438.5)" font-family="'TimesNewRomanPS-BoldMT'" font-size="72">I</text>
+</g>
+<g id="Layer_4">
+	<g>
+		
+			<text transform="matrix(1 0 0 1 509.8467 139.6763)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="40.6533">E</text>
+		<text transform="matrix(1 0 0 1 538.3955 139.6763)" fill="#010101" font-family="'OpenSymbol'" font-size="40.6533">=</text>
+		<polygon fill="#010101" points="583.712,142.051 577.021,122.103 574.173,124.672 573.694,123.447 578.375,119.236 
+			584.488,137.725 593.508,92.861 594.468,92.853 584.594,142.051 		"/>
+		<rect x="594.472" y="92.778" fill="#010101" width="95.837" height="1.699"/>
+		
+			<text transform="matrix(1 0 0 1 599.9092 139.6763)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="40.6533">P</text>
+		<polygon fill="#010101" points="632.501,138.287 642.862,127.926 632.501,117.563 633.932,116.174 644.254,126.535 
+			654.654,116.174 656.005,117.563 645.645,127.926 656.005,138.287 654.654,139.676 644.254,129.315 633.932,139.676 		"/>
+		
+			<text transform="matrix(1 0 0 1 664.4775 139.6743)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="40.6533">R</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 667.6562 254.748)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.3223">E</text>
+		<text transform="matrix(1 0 0 1 702.9922 254.748)" fill="#010101" font-family="'OpenSymbol'" font-size="50.3223">=</text>
+		
+			<text transform="matrix(1 0 0 1 758.1035 225.7168)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.3223">P</text>
+		<rect x="746.75" y="239.184" fill="#010101" width="42.909" height="2.946"/>
+		
+			<text transform="matrix(1 0 0 1 758.1035 298.0762)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.3223">I</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 725.8672 420.0771)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.1724">E</text>
+		<text transform="matrix(1 0 0 1 763.6504 420.0771)" fill="#010101" font-family="'OpenSymbol'" font-size="53.1724">=</text>
+		
+			<text transform="matrix(1 0 0 1 811.6562 420.0771)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.1724">I</text>
+		<polygon fill="#010101" points="843.183,418.261 856.735,404.708 843.183,391.154 845.054,389.337 858.553,402.891 
+			872.158,389.337 873.924,391.154 860.372,404.708 873.924,418.261 872.158,420.078 858.553,406.525 845.054,420.078 		"/>
+		
+			<text transform="matrix(1 0 0 1 885.0059 420.0791)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.1724">R</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 775.9795 589.3447)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="49.5093">R</text>
+		<text transform="matrix(1 0 0 1 808.6758 589.3447)" fill="#010101" font-family="'OpenSymbol'" font-size="49.5093">=</text>
+		<text transform="matrix(1 0 0 1 862.8955 560.79)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="49.5093">E</text>
+		<rect x="851.303" y="574.034" fill="#010101" width="43.045" height="2.896"/>
+		
+			<text transform="matrix(1 0 0 1 862.8955 632.3926)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="49.5093">I</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 688.0371 735.1104)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="42.8156">R</text>
+		<text transform="matrix(1 0 0 1 716.3145 735.1104)" fill="#010101" font-family="'OpenSymbol'" font-size="42.8156">=</text>
+		
+			<text transform="matrix(1 0 0 1 763.2041 710.4111)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="42.8156">E</text>
+		<text transform="matrix(1 0 0 1 791.8379 688.9365)" fill="#010101" font-family="'DejaVuSans'" font-size="25.6691">2</text>
+		<rect x="753.539" y="721.865" fill="#010101" width="51.898" height="2.507"/>
+		
+			<text transform="matrix(1 0 0 1 763.2031 772.333)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="42.8156">P</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 534.1426 812.4785)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="47.8311">R</text>
+		<text transform="matrix(1 0 0 1 565.7344 812.4785)" fill="#010101" font-family="'OpenSymbol'" font-size="47.8311">=</text>
+		
+			<text transform="matrix(1 0 0 1 624.5078 784.8857)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="47.8311">P</text>
+		<rect x="607.312" y="797.683" fill="#010101" width="47.583" height="2.801"/>
+		
+			<text transform="matrix(1 0 0 1 618.5127 854.0645)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="47.8311">I</text>
+		<text transform="matrix(1 0 0 1 639.7061 830.0723)" fill="#010101" font-family="'DejaVuSans'" font-size="28.676">2</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 325.5762 180.3594)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.7139">I</text>
+		<text transform="matrix(1 0 0 1 351.6191 180.3594)" fill="#010101" font-family="'OpenSymbol'" font-size="53.7139">=</text>
+		<polygon fill="#010101" points="411.932,230.188 403.101,169.342 399.343,177.179 398.712,173.442 404.89,160.596 
+			412.958,216.995 424.864,80.144 426.127,80.12 413.099,230.188 		"/>
+		<rect x="425.715" y="79.78" fill="#010101" width="53.884" height="2.245"/>
+		
+			<text transform="matrix(1 0 0 1 444.5703 149.377)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.7139">P</text>
+		<rect x="432.45" y="163.75" fill="#010101" width="45.802" height="3.142"/>
+		
+			<text transform="matrix(1 0 0 1 436.9365 227.0625)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="53.7139">R</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 188.9248 263.5337)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="52.6874">I</text>
+		<text transform="matrix(1 0 0 1 214.4678 263.5337)" fill="#010101" font-family="'OpenSymbol'" font-size="52.6874">=</text>
+		
+			<text transform="matrix(1 0 0 1 272.6104 233.144)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="52.6874">P</text>
+		<rect x="259.836" y="247.236" fill="#010101" width="45.809" height="3.082"/>
+		
+			<text transform="matrix(1 0 0 1 272.1699 309.3384)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="52.6874">E</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 107.8252 414.751)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.2805">I</text>
+		<text transform="matrix(1 0 0 1 132.2041 414.751)" fill="#010101" font-family="'OpenSymbol'" font-size="50.2805">=</text>
+		
+			<text transform="matrix(1 0 0 1 187.2676 385.748)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.2805">E</text>
+		<rect x="175.499" y="399.199" fill="#010101" width="43.715" height="2.943"/>
+		
+			<text transform="matrix(1 0 0 1 189.7881 458.4639)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="50.2805">R</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 81.2695 595.6504)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="58.685">P</text>
+		<text transform="matrix(1 0 0 1 121.9893 595.6504)" fill="#010101" font-family="'OpenSymbol'" font-size="58.685">=</text>
+		
+			<text transform="matrix(1 0 0 1 174.9717 595.6504)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="58.685">E</text>
+		<polygon fill="#010101" points="222.515,593.645 237.477,578.688 222.515,563.727 224.58,561.724 239.479,576.682 
+			254.494,561.724 256.443,563.727 241.487,578.688 256.443,593.645 254.494,595.647 239.479,580.69 224.58,595.647 		"/>
+		
+			<text transform="matrix(1 0 0 1 269.1631 595.6455)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="58.685">I</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 203.1196 749.4219)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="37.4562">P</text>
+		<text transform="matrix(1 0 0 1 229.1079 749.4219)" fill="#010101" font-family="'OpenSymbol'" font-size="37.4562">=</text>
+		
+			<text transform="matrix(1 0 0 1 262.9243 749.4219)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="37.4562">I</text>
+		<text transform="matrix(1 0 0 1 279.522 730.6348)" fill="#010101" font-family="'DejaVuSans'" font-size="22.456">2</text>
+		<polygon fill="#010101" points="297.658,748.143 307.208,738.596 297.658,729.05 298.976,727.769 308.485,737.314 
+			318.069,727.769 319.313,729.05 309.767,738.596 319.313,748.143 318.069,749.424 308.485,739.877 298.976,749.424 		"/>
+		
+			<text transform="matrix(1 0 0 1 327.436 749.4258)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="37.4562">R</text>
+	</g>
+	<g>
+		
+			<text transform="matrix(1 0 0 1 356.5122 829.6992)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="45.5206">P</text>
+		<text transform="matrix(1 0 0 1 388.0952 829.6992)" fill="#010101" font-family="'OpenSymbol'" font-size="45.5206">=</text>
+		
+			<text transform="matrix(1 0 0 1 437.9487 803.4424)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="45.5206">E</text>
+		<text transform="matrix(1 0 0 1 468.3911 780.6104)" fill="#010101" font-family="'DejaVuSans'" font-size="27.2908">2</text>
+		<rect x="427.671" y="815.621" fill="#010101" width="54.799" height="2.664"/>
+		
+			<text transform="matrix(1 0 0 1 455.8345 869.2764)" fill="#010101" font-family="'TimesNewRomanPS-ItalicMT'" font-size="45.5206">R</text>
+	</g>
+</g>
+</svg>
