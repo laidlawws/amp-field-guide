@@ -1,4 +1,3 @@
-// /components/Sidebar.tsx
 "use client";
 
 import Image from "next/image";
@@ -39,21 +38,26 @@ export default function Sidebar({ open, setOpen }: Props) {
       />
 
       <aside
-        className={`fixed z-50 md:z-auto md:static top-0 left-0 h-dvh w-72 bg-white border-r border-[#e6d2a8]
-        p-5 transition-transform md:translate-x-0 ${
+        className={`fixed z-50 md:z-auto md:static top-0 left-0 h-dvh w-72 bg-white 
+        border-r border-[#e6d2a8] p-5 transition-transform md:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center gap-3 mb-6">
-          <Image src="/logo.png" alt="AMP Logo" width={90} height={40} />
-          <div className="leading-tight">
-            <div className="font-extrabold text-[#4a2412]">AMP</div>
-            <div className="text-sm font-semibold text-[#f26422]">
-              Field Reference Guide
-            </div>
-          </div>
+        {/* Sidebar Header SVG */}
+        <div className="flex justify-center pb-5 mb-6 border-b border-[#e6d2a8]">
+          <Link href="/" onClick={() => setOpen(false)} className="w-[180px]">
+            <Image
+              src="/amp-header.svg"
+              alt="AMP Field Reference Guide"
+              width={180}
+              height={40}
+              className="w-full h-auto"
+              priority
+            />
+          </Link>
         </div>
 
+        {/* Navigation */}
         <nav className="space-y-1">
           {nav.map((item) => {
             const active = pathname === item.href;
@@ -62,12 +66,12 @@ export default function Sidebar({ open, setOpen }: Props) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`block rounded-xl px-3 py-2 text-sm font-semibold transition
-                ${
-                  active
-                    ? "bg-[#f26422] text-white"
-                    : "hover:bg-[#f7f5f2] text-[#4a2412]"
-                }`}
+                className={`block rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150
+                  ${
+                    active
+                      ? "bg-[#f26422] text-white shadow-sm"
+                      : "text-[#4a2412] hover:bg-[#f7f5f2] hover:translate-x-[2px]"
+                  }`}
               >
                 {item.label}
               </Link>
@@ -75,8 +79,9 @@ export default function Sidebar({ open, setOpen }: Props) {
           })}
         </nav>
 
-        <div className="mt-6 text-xs text-[#4a2412]/70">
-          <div className="font-semibold">Tip:</div>
+        {/* Tip Section */}
+        <div className="mt-8 text-xs text-[#4a2412]/70 border-t border-[#e6d2a8] pt-4">
+          <div className="font-semibold mb-1">Tip:</div>
           <div>Use the search on Home to quickly find formulas.</div>
         </div>
       </aside>
