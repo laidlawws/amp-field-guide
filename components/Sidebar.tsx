@@ -14,7 +14,6 @@ const nav = [
   { href: "/reference/ohms-chart", label: "Ohm’s Law Chart" },
   { href: "/calculators/power", label: "Power" },
   { href: "/calculators/voltage-drop", label: "Voltage Drop" },
-  { href: "/reference/quick", label: "Quick Reference" },
   { href: "/reference/conduit", label: "Conduit Bending" },
   { href: "/reference/fill", label: "Conduit Fill" },
   { href: "/reference/ampacity", label: "Ampacity" },
