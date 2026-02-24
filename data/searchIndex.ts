@@ -7,7 +7,7 @@ export type SearchItem = {
   
   export const SEARCH_INDEX: SearchItem[] = [
     // Calculators
-    { title: "Ohm’s Law Calculator", summary: "Solve V, I, or R.", href: "/calculators/ohms", tags: ["ohms", "voltage", "current", "resistance"] },
+    { title: "Ohm’s Law Calculator", summary: "Solve V, I, or R.", href: "/reference/ohms-chart", tags: ["ohms", "voltage", "current", "resistance"] },
     { title: "Power Calculator", summary: "Watts from V × I.", href: "/calculators/power", tags: ["power", "watts"] },
     { title: "Voltage Drop (Single Phase)", summary: "Compute VD using I, length, and Ω/1000ft.", href: "/calculators/voltage-drop", tags: ["voltage drop", "vd"] },
   
