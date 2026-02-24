@@ -1,5 +1,6 @@
 "use client";
 
+import Bookmarks from "@/components/Bookmarks";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import Card from "@/components/Card";
@@ -21,6 +22,7 @@ export default function Home() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
+      <Bookmarks />
       <Card title="Search">
         <input
           className="input"
