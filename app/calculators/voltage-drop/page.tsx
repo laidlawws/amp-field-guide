@@ -6,6 +6,10 @@ import Card from "@/components/Card";
 type Phase = "1ph" | "3ph";
 type Material = "copper" | "aluminum";
 
+type VDResult =
+  | { ok: false; msg: string }
+  | { ok: true; rPer1000: number; vd: number; pct: number; loadV: number };
+
 const SQRT3 = Math.sqrt(3);
 
 // Resistivity at 20°C (ohm-meter)
@@ -105,7 +109,7 @@ export default function VoltageDrop() {
   const [lengthFt, setLengthFt] = useState("150");
   const [tempC, setTempC] = useState("75"); // default for typical termination rating usage
 
-  const result = useMemo(() => {
+  const result = useMemo<VDResult>(() => {
     const V = num(sourceV);
     const I = num(amps);
     const L = num(lengthFt); // one-way length
