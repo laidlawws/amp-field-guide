@@ -14,9 +14,10 @@ const nav = [
   { href: "/reference/ohms-chart", label: "Ohm’s Law Chart" },
   { href: "/calculators/power", label: "Power" },
   { href: "/calculators/voltage-drop", label: "Voltage Drop" },
+  { href: "/calculators/reactance", label: "C / L / Reactance" },
+  { href: "/reference/ampacity", label: "Ampacity" },
   { href: "/reference/conduit", label: "Conduit Bending" },
   { href: "/reference/fill", label: "Conduit Fill" },
-  { href: "/reference/ampacity", label: "Ampacity" },
   { href: "/reference/box-fill", label: "Box Fill" },
   { href: "/reference/tables", label: "NEC Tables" },
 ];
