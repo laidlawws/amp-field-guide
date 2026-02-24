@@ -16,6 +16,7 @@ const nav = [
   { href: "/calculators/voltage-drop", label: "Voltage Drop" },
   { href: "/calculators/reactance", label: "C / L / Reactance" },
   { href: "/reference/ampacity", label: "Ampacity" },
+  { href: "/calculators/pf-correction", label: "PF Correction" },
   { href: "/reference/conduit", label: "Conduit Bending" },
   { href: "/reference/fill", label: "Conduit Fill" },
   { href: "/reference/box-fill", label: "Box Fill" },
