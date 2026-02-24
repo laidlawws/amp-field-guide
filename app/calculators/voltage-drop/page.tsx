@@ -249,9 +249,6 @@ export default function VoltageDrop() {
             </div>
 
             <div className="md:col-span-3 text-xs text-[#4a2412]/70 leading-5">
-              This calculator uses conductor <b>DC resistance</b> computed from resistivity and temperature.
-              It does not include reactance (X). If you want an “Advanced” toggle with typical X values by
-              conduit type and spacing, I can add that next.
             </div>
           </div>
         )}

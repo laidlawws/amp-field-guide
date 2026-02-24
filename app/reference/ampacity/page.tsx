@@ -330,8 +330,6 @@ export default function AmpacityCalculatorPage() {
           </div>
 
           <div className="md:col-span-3 text-xs text-[#4a2412]/70 leading-5">
-            Assumes not more than three current-carrying conductors, 30°C base tables, and applies only ambient correction.
-            If you want: (1) “# of CCC” adjustment factors, (2) rooftop/sunlight adder, or (3) a warning for small conductor OCPD limits (14/12/10), tell me and I’ll add it.
           </div>
         </div>
       </Card>
