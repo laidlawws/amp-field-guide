@@ -19,6 +19,7 @@ const nav = [
   { href: "/reference/ampacity", label: "Ampacity" },
   { href: "/calculators/pf-correction", label: "PF Correction" },
   { href: "/calculators/flc", label: "Motor FLC" },
+  { href: "/calculators/transformers", label: "Transformers" },
   { href: "/reference/conduit", label: "Conduit Bending" },
   { href: "/reference/fill", label: "Conduit Fill" },
   { href: "/reference/box-fill", label: "Box Fill" },
