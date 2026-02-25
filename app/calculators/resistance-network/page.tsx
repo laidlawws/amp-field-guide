@@ -142,18 +142,7 @@ export default function ResistanceNetwork() {
     id: "root",
     type: "series",
     label: "Total",
-    children: [
-      { id: uid(), type: "resistor", label: "R1", value: "10", unit: "Ω" },
-      {
-        id: uid(),
-        type: "parallel",
-        label: "Branch A",
-        children: [
-          { id: uid(), type: "resistor", label: "R2", value: "20", unit: "Ω" },
-          { id: uid(), type: "resistor", label: "R3", value: "30", unit: "Ω" },
-        ],
-      },
-    ],
+    children: [],
   });
 
   const [selectedId, setSelectedId] = useState<string>("root");
@@ -202,7 +191,7 @@ export default function ResistanceNetwork() {
                 </div>
               </div>
             </div>
-
+            
             {/* Tree editor */}
             <NodeEditor
               node={root}
