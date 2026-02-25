@@ -23,6 +23,7 @@ const nav = [
   { href: "/reference/conduit", label: "Conduit Bending" },
   { href: "/reference/fill", label: "Conduit Fill" },
   { href: "/reference/box-fill", label: "Box Fill" },
+  { href: "/reference/material-properties", label: "Material Properties" },
   { href: "/reference/tables", label: "NEC Tables" },
 ];
 
