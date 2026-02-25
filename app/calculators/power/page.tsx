@@ -3,259 +3,326 @@
 import { useMemo, useState } from "react";
 import Card from "@/components/Card";
 
-type Phase = "dc" | "1ph" | "3ph";
-type Mode =
-  | "amps_from_hp"
-  | "hp_from_vi"
-  | "watts_from_vi"
-  | "kw_from_vi"
-  | "kva_from_vi";
+type System = "dc" | "ac_1ph" | "ac_3ph";
+type SolveFor = "current" | "voltage" | "kw" | "kva" | "hp";
 
 const SQRT3 = Math.sqrt(3);
 
-function num(v: string) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : NaN;
+function n(v: string) {
+  const x = Number(v);
+  return Number.isFinite(x) ? x : NaN;
+}
+function nz(v: string) {
+  const x = n(v);
+  return Number.isFinite(x) ? x : NaN;
+}
+function clamp01(x: number) {
+  if (!Number.isFinite(x)) return NaN;
+  if (x <= 0 || x > 1) return NaN;
+  return x;
+}
+function fmt(x: number, unit: string, dp = 3) {
+  if (!Number.isFinite(x)) return "—";
+  const a = Math.abs(x);
+  const d = a >= 1000 ? 1 : a >= 100 ? 2 : dp;
+  return `${x.toFixed(d)} ${unit}`;
 }
 
-function fmt(n: number, unit: string, decimals = 3) {
-  if (!Number.isFinite(n)) return "—";
-  const abs = Math.abs(n);
-  const d = abs >= 1000 ? 1 : abs >= 100 ? 2 : decimals;
-  return `${n.toFixed(d)} ${unit}`;
+function fieldClass(isDisabled: boolean) {
+  // Uses your existing .input base styles, then adds disabled styling
+  return `input transition ${
+    isDisabled
+      ? "bg-[#f7f5f2] text-[#4a2412]/60 border-[#e6d2a8] cursor-not-allowed"
+      : "bg-white text-[#4a2412]"
+  }`;
 }
 
-function phaseFactor(phase: Phase) {
-  return phase === "3ph" ? SQRT3 : 1;
+// Real power (kW) from V, I, PF
+function kwFromVI(system: System, V: number, I: number, pf: number) {
+  if (system === "dc") return (V * I) / 1000;
+  if (system === "ac_1ph") return (V * I * pf) / 1000;
+  return (SQRT3 * V * I * pf) / 1000;
 }
 
-function isAC(phase: Phase) {
-  return phase === "1ph" || phase === "3ph";
+// Apparent power (kVA) from V, I
+function kvaFromVI(system: System, V: number, I: number) {
+  if (system === "dc" || system === "ac_1ph") return (V * I) / 1000;
+  return (SQRT3 * V * I) / 1000;
 }
 
-/**
- * Electrical real power input (W):
- *  - DC: P = V*I
- *  - AC 1φ: P = V*I*PF
- *  - AC 3φ: P = √3*V*I*PF
- */
-function wattsFromVI(V: number, I: number, phase: Phase, pf: number) {
-  if (phase === "dc") return V * I;
-  return phaseFactor(phase) * V * I * pf;
+function currentFromKVA(system: System, kVA: number, V: number) {
+  if (system === "dc" || system === "ac_1ph") return (kVA * 1000) / V;
+  return (kVA * 1000) / (SQRT3 * V);
 }
 
-/**
- * Apparent power (VA):
- *  - 1φ: S = V*I
- *  - 3φ: S = √3*V*I
- *  - DC: treat as V*I (PF not applicable)
- */
-function vaFromVI(V: number, I: number, phase: Phase) {
-  return phaseFactor(phase) * V * I;
+function voltageFromKVA(system: System, kVA: number, I: number) {
+  if (system === "dc" || system === "ac_1ph") return (kVA * 1000) / I;
+  return (kVA * 1000) / (SQRT3 * I);
 }
 
-/**
- * Mechanical horsepower out:
- * HP = (P_in * eff) / 746
- */
-function hpFromVI(V: number, I: number, phase: Phase, pf: number, eff: number) {
-  const Pin = wattsFromVI(V, I, phase, phase === "dc" ? 1 : pf);
-  return (Pin * eff) / 746;
+function denom(system: System, V: number, pf: number) {
+  if (system === "dc" || system === "ac_1ph") return V * pf;
+  return SQRT3 * V * pf;
 }
 
-/**
- * Current from horsepower out:
- * I = (HP*746) / (eff * PF * V * phaseFactor)
- * DC assumes PF=1.
- */
-function ampsFromHP(HP: number, V: number, phase: Phase, pf: number, eff: number) {
-  const pfUse = phase === "dc" ? 1 : pf;
-  const denom = eff * pfUse * V * phaseFactor(phase);
-  if (denom === 0) return NaN;
-  return (HP * 746) / denom;
+// HP conversions (approx)
+function hpFromKW(kW: number, eff: number) {
+  return (kW * 1000 * eff) / 746;
+}
+function kwFromHP(hp: number, eff: number) {
+  return (hp * 746) / (1000 * eff);
 }
 
-export default function Power() {
-  const [mode, setMode] = useState<Mode>("amps_from_hp");
-  const [phase, setPhase] = useState<Phase>("3ph");
+export default function PowerCalculator() {
+  const [system, setSystem] = useState<System>("ac_3ph");
+  const [solveFor, setSolveFor] = useState<SolveFor>("current");
 
-  // Common inputs
-  const [V, setV] = useState("");
-  const [I, setI] = useState("");
-  const [hp, setHp] = useState("");
-  const [pf, setPf] = useState("0.9");
-  const [eff, setEff] = useState("0.9");
+  const [voltage, setVoltage] = useState("480");
+  const [current, setCurrent] = useState("50");
+  const [pf, setPf] = useState("0.85");
+  const [eff, setEff] = useState("0.90");
+  const [kw, setKw] = useState("0");
+  const [kva, setKva] = useState("0");
+  const [hp, setHp] = useState("0");
 
-  const showPF = isAC(phase) && (mode === "amps_from_hp" || mode === "hp_from_vi" || mode === "watts_from_vi" || mode === "kw_from_vi");
-  const showEff = mode === "amps_from_hp" || mode === "hp_from_vi";
+  const computed = useMemo(() => {
+    const V = nz(voltage);
+    const I = nz(current);
+    const PF = system === "dc" ? 1 : clamp01(nz(pf));
+    const Eff = clamp01(nz(eff));
+    const kW = nz(kw);
+    const kVA = nz(kva);
+    const HP = nz(hp);
 
-  const calc = useMemo(() => {
-    const v = num(V);
-    const i = num(I);
-    const HP = num(hp);
+    if (solveFor === "current") {
+      if (!Number.isFinite(V) || V <= 0) return { ok: false as const, msg: "Enter Voltage > 0." };
 
-    const PF = showPF ? num(pf) : 1;
-    const Eff = showEff ? num(eff) : 1;
+      if (Number.isFinite(kVA) && kVA > 0) {
+        return { ok: true as const, value: currentFromKVA(system, kVA, V), label: "Current" };
+      }
 
-    // validate PF/Eff ranges if provided
-    const pfOk = !showPF || (Number.isFinite(PF) && PF > 0 && PF <= 1);
-    const effOk = !showEff || (Number.isFinite(Eff) && Eff > 0 && Eff <= 1);
+      if (Number.isFinite(kW) && kW > 0) {
+        if (system !== "dc" && !Number.isFinite(PF)) return { ok: false as const, msg: "Enter Power Factor (0–1)." };
+        const d = denom(system, V, system === "dc" ? 1 : PF);
+        if (d <= 0) return { ok: false as const, msg: "Check inputs." };
+        return { ok: true as const, value: (kW * 1000) / d, label: "Current" };
+      }
 
-    if (!pfOk || !effOk) {
-      return { ok: false, out: "PF/Eff must be between 0 and 1." };
+      return { ok: false as const, msg: "Provide kVA or kW to solve for Current." };
     }
 
-    try {
-      if (mode === "amps_from_hp") {
-        if (!Number.isFinite(HP) || !Number.isFinite(v)) return { ok: false, out: "Enter HP and Voltage." };
-        const amps = ampsFromHP(HP, v, phase, PF, Eff);
-        return { ok: true, out: fmt(amps, "A") };
+    if (solveFor === "voltage") {
+      if (!Number.isFinite(I) || I <= 0) return { ok: false as const, msg: "Enter Current > 0." };
+
+      if (Number.isFinite(kVA) && kVA > 0) {
+        return { ok: true as const, value: voltageFromKVA(system, kVA, I), label: "Voltage" };
       }
 
-      if (mode === "hp_from_vi") {
-        if (!Number.isFinite(v) || !Number.isFinite(i)) return { ok: false, out: "Enter Voltage and Current." };
-        const outHP = hpFromVI(v, i, phase, PF, Eff);
-        return { ok: true, out: fmt(outHP, "HP") };
+      if (Number.isFinite(kW) && kW > 0) {
+        if (system !== "dc" && !Number.isFinite(PF)) return { ok: false as const, msg: "Enter Power Factor (0–1)." };
+        const d = (system === "dc" || system === "ac_1ph") ? I * (system === "dc" ? 1 : PF) : SQRT3 * I * PF;
+        if (d <= 0) return { ok: false as const, msg: "Check inputs." };
+        return { ok: true as const, value: (kW * 1000) / d, label: "Voltage" };
       }
 
-      if (mode === "watts_from_vi") {
-        if (!Number.isFinite(v) || !Number.isFinite(i)) return { ok: false, out: "Enter Voltage and Current." };
-        const W = wattsFromVI(v, i, phase, phase === "dc" ? 1 : PF);
-        return { ok: true, out: fmt(W, "W", 2) };
-      }
-
-      if (mode === "kw_from_vi") {
-        if (!Number.isFinite(v) || !Number.isFinite(i)) return { ok: false, out: "Enter Voltage and Current." };
-        const W = wattsFromVI(v, i, phase, phase === "dc" ? 1 : PF);
-        return { ok: true, out: fmt(W / 1000, "kW") };
-      }
-
-      if (mode === "kva_from_vi") {
-        if (!Number.isFinite(v) || !Number.isFinite(i)) return { ok: false, out: "Enter Voltage and Current." };
-        const VA = vaFromVI(v, i, phase);
-        return { ok: true, out: fmt(VA / 1000, "kVA") };
-      }
-
-      return { ok: false, out: "Select a mode." };
-    } catch {
-      return { ok: false, out: "Calculation error." };
+      return { ok: false as const, msg: "Provide kVA or kW to solve for Voltage." };
     }
-  }, [mode, phase, V, I, hp, pf, eff, showPF, showEff]);
 
-  const title = useMemo(() => {
-    switch (mode) {
-      case "amps_from_hp":
-        return "Amps from Horsepower";
-      case "hp_from_vi":
-        return "Horsepower from Volts & Amps";
-      case "watts_from_vi":
-        return "Watts from Volts & Amps";
-      case "kw_from_vi":
-        return "Kilowatts from Volts & Amps";
-      case "kva_from_vi":
-        return "kVA from Volts & Amps";
+    if (solveFor === "kva") {
+      if (!Number.isFinite(V) || V <= 0) return { ok: false as const, msg: "Enter Voltage > 0." };
+      if (!Number.isFinite(I) || I <= 0) return { ok: false as const, msg: "Enter Current > 0." };
+      return { ok: true as const, value: kvaFromVI(system, V, I), label: "kVA" };
     }
-  }, [mode]);
 
-  const clear = () => {
-    setV("");
-    setI("");
-    setHp("");
-    setPf("0.9");
-    setEff("0.9");
+    if (solveFor === "kw") {
+      if (Number.isFinite(HP) && HP > 0) {
+        if (!Number.isFinite(Eff)) return { ok: false as const, msg: "Enter Efficiency (0–1) to convert HP → kW." };
+        return { ok: true as const, value: kwFromHP(HP, Eff), label: "kW" };
+      }
+
+      if (!Number.isFinite(V) || V <= 0) return { ok: false as const, msg: "Enter Voltage > 0." };
+      if (!Number.isFinite(I) || I <= 0) return { ok: false as const, msg: "Enter Current > 0." };
+      if (system !== "dc" && !Number.isFinite(PF)) return { ok: false as const, msg: "Enter Power Factor (0–1)." };
+      return { ok: true as const, value: kwFromVI(system, V, I, system === "dc" ? 1 : PF), label: "kW" };
+    }
+
+    // solveFor === "hp"
+    if (Number.isFinite(kW) && kW > 0) {
+      if (!Number.isFinite(Eff)) return { ok: false as const, msg: "Enter Efficiency (0–1) to convert kW → HP." };
+      return { ok: true as const, value: hpFromKW(kW, Eff), label: "HP" };
+    }
+
+    return { ok: false as const, msg: "Provide kW to solve for HP." };
+  }, [system, solveFor, voltage, current, pf, eff, kw, kva, hp]);
+
+  const showPF = system !== "dc";
+  const showEff = solveFor === "hp" || solveFor === "kw";
+
+  // Disable the field being solved for (and grey it)
+  const disabled = {
+    voltage: solveFor === "voltage",
+    current: solveFor === "current",
+    kw: solveFor === "kw",
+    kva: solveFor === "kva",
+    hp: solveFor === "hp",
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <Card
-        title="Power & Horsepower Calculator"
-        right={
-          <button
-            className="rounded-xl border border-[#e6d2a8] bg-white px-3 py-2 text-sm font-extrabold hover:opacity-90"
-            onClick={clear}
-          >
-            Clear
-          </button>
-        }
-      >
-        <div className="grid md:grid-cols-3 gap-3">
+    <div className="max-w-6xl mx-auto space-y-6">
+      <Card title="Power Calculator">
+        <div className="grid md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <div className="text-sm font-extrabold">What do you want to find?</div>
-            <select className="input" value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-              <option value="amps_from_hp">Amps from Horsepower</option>
-              <option value="hp_from_vi">Horsepower from Volts & Amps</option>
-              <option value="watts_from_vi">Watts from Volts & Amps</option>
-              <option value="kw_from_vi">Kilowatts from Volts & Amps</option>
-              <option value="kva_from_vi">kVA from Volts & Amps</option>
+            <div className="text-sm font-extrabold text-[#4a2412]">System</div>
+            <select className="input" value={system} onChange={(e) => setSystem(e.target.value as System)}>
+              <option value="dc">DC</option>
+              <option value="ac_1ph">AC Single-Phase</option>
+              <option value="ac_3ph">AC Three-Phase</option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <div className="text-sm font-extrabold">System type</div>
-            <select className="input" value={phase} onChange={(e) => setPhase(e.target.value as Phase)}>
-              <option value="dc">DC</option>
-              <option value="1ph">AC Single-Phase</option>
-              <option value="3ph">AC Three-Phase</option>
+            <div className="text-sm font-extrabold text-[#4a2412]">Solve for</div>
+            <select className="input" value={solveFor} onChange={(e) => setSolveFor(e.target.value as SolveFor)}>
+              <option value="current">Current</option>
+              <option value="voltage">Voltage</option>
+              <option value="kw">kW (Real Power)</option>
+              <option value="kva">kVA (Apparent Power)</option>
+              <option value="hp">Horsepower</option>
             </select>
           </div>
 
           <div className="rounded-2xl border border-[#e6d2a8] bg-[#f7f5f2] p-4">
-            <div className="text-sm text-[#4a2412]/70">Mode</div>
-            <div className="mt-1 text-lg font-extrabold">{title}</div>
-            <div className="mt-2 text-xs text-[#4a2412]/70 leading-5">
-              Notes: AC uses PF for real power. HP assumes mechanical output = electrical input × efficiency.
+            <div className="text-sm text-[#4a2412]/70">Tip</div>
+            <div className="mt-1 text-xs text-[#4a2412]/70 leading-5">
+              The field you’re solving for is disabled and greyed out. Enter the known values and the solver will compute the missing one.
             </div>
           </div>
-        </div>
-      </Card>
 
-      <Card title={`Inputs: ${title}`}>
-        <div className="grid md:grid-cols-3 gap-4">
-          {/* Voltage */}
-          {(mode !== "amps_from_hp" || true) && (
+          <div className="space-y-2">
+            <div className="text-sm font-extrabold text-[#4a2412]">Voltage (V)</div>
+            <input
+              className={fieldClass(disabled.voltage)}
+              inputMode="decimal"
+              value={voltage}
+              onChange={(e) => setVoltage(e.target.value)}
+              disabled={disabled.voltage}
+              placeholder="e.g. 480"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="text-sm font-extrabold text-[#4a2412]">Current (A)</div>
+            <input
+              className={fieldClass(disabled.current)}
+              inputMode="decimal"
+              value={current}
+              onChange={(e) => setCurrent(e.target.value)}
+              disabled={disabled.current}
+              placeholder="e.g. 50"
+            />
+          </div>
+
+          {showPF ? (
             <div className="space-y-2">
-              <div className="text-sm font-extrabold">Voltage (V)</div>
-              <input className="input" inputMode="decimal" placeholder="e.g. 480" value={V} onChange={(e) => setV(e.target.value)} />
+              <div className="text-sm font-extrabold text-[#4a2412]">Power Factor (0–1)</div>
+              <input
+                className={fieldClass(false)}
+                inputMode="decimal"
+                value={pf}
+                onChange={(e) => setPf(e.target.value)}
+                placeholder="e.g. 0.85"
+              />
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-[#e6d2a8] bg-[#f7f5f2] p-4">
+              <div className="text-sm font-extrabold text-[#4a2412]">Power Factor</div>
+              <div className="mt-1 text-xs text-[#4a2412]/70">Not used for DC (assumed PF = 1).</div>
             </div>
           )}
 
-          {/* Current */}
-          {(mode === "hp_from_vi" || mode === "watts_from_vi" || mode === "kw_from_vi" || mode === "kva_from_vi") && (
-            <div className="space-y-2">
-              <div className="text-sm font-extrabold">Current (A)</div>
-              <input className="input" inputMode="decimal" placeholder="e.g. 35" value={I} onChange={(e) => setI(e.target.value)} />
-            </div>
-          )}
+          <div className="space-y-2">
+            <div className="text-sm font-extrabold text-[#4a2412]">kVA</div>
+            <input
+              className={fieldClass(disabled.kva)}
+              inputMode="decimal"
+              value={kva}
+              onChange={(e) => setKva(e.target.value)}
+              disabled={disabled.kva}
+              placeholder="e.g. 25"
+            />
+            <div className="text-xs text-[#4a2412]/70">Best for finding Current or Voltage.</div>
+          </div>
 
-          {/* Horsepower */}
-          {mode === "amps_from_hp" && (
-            <div className="space-y-2">
-              <div className="text-sm font-extrabold">Horsepower (HP)</div>
-              <input className="input" inputMode="decimal" placeholder="e.g. 10" value={hp} onChange={(e) => setHp(e.target.value)} />
-            </div>
-          )}
+          <div className="space-y-2">
+            <div className="text-sm font-extrabold text-[#4a2412]">kW</div>
+            <input
+              className={fieldClass(disabled.kw)}
+              inputMode="decimal"
+              value={kw}
+              onChange={(e) => setKw(e.target.value)}
+              disabled={disabled.kw}
+              placeholder="e.g. 20"
+            />
+          </div>
 
-          {/* Power Factor */}
-          {showPF && (
-            <div className="space-y-2">
-              <div className="text-sm font-extrabold">Power Factor (PF)</div>
-              <input className="input" inputMode="decimal" placeholder="0–1 (e.g. 0.9)" value={pf} onChange={(e) => setPf(e.target.value)} />
-            </div>
-          )}
+          <div className="space-y-2">
+            <div className="text-sm font-extrabold text-[#4a2412]">Horsepower (HP)</div>
+            <input
+              className={fieldClass(disabled.hp)}
+              inputMode="decimal"
+              value={hp}
+              onChange={(e) => setHp(e.target.value)}
+              disabled={disabled.hp}
+              placeholder="e.g. 10"
+            />
+          </div>
 
-          {/* Efficiency */}
-          {showEff && (
-            <div className="space-y-2">
-              <div className="text-sm font-extrabold">Efficiency</div>
-              <input className="input" inputMode="decimal" placeholder="0–1 (e.g. 0.9)" value={eff} onChange={(e) => setEff(e.target.value)} />
+          {showEff ? (
+            <div className="space-y-2 md:col-span-3">
+              <div className="text-sm font-extrabold text-[#4a2412]">Efficiency (0–1)</div>
+              <input
+                className={fieldClass(false)}
+                inputMode="decimal"
+                value={eff}
+                onChange={(e) => setEff(e.target.value)}
+                placeholder="e.g. 0.90"
+              />
+              <div className="text-xs text-[#4a2412]/70">Only required for HP ⇄ kW conversions.</div>
             </div>
-          )}
+          ) : null}
 
-          {/* Results */}
-          <div className="rounded-2xl border border-[#e6d2a8] bg-white p-4 md:col-span-3">
-            <div className="text-sm text-[#4a2412]/70">Result</div>
-            <div className="mt-1 text-2xl font-extrabold text-[#f26422]">{calc.out}</div>
-            {!calc.ok && <div className="mt-2 text-sm text-[#4a2412]/70">Fill the required fields above.</div>}
+          <div className="md:col-span-3 rounded-2xl border border-[#e6d2a8] bg-white p-5">
+            {!computed.ok ? (
+              <div className="text-sm text-[#4a2412]/70">{computed.msg}</div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-4 items-start">
+                <div>
+                  <div className="text-sm text-[#4a2412]/70">Result</div>
+                  <div className="mt-1 text-3xl font-extrabold text-[#f26422]">
+                    {computed.label === "Current"
+                      ? fmt(computed.value, "A", 3)
+                      : computed.label === "Voltage"
+                      ? fmt(computed.value, "V", 2)
+                      : computed.label === "kVA"
+                      ? fmt(computed.value, "kVA", 3)
+                      : computed.label === "kW"
+                      ? fmt(computed.value, "kW", 3)
+                      : fmt(computed.value, "HP", 3)}
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <div className="text-sm text-[#4a2412]/70">How it solved</div>
+                  <div className="mt-1 text-sm text-[#4a2412]/80 leading-6">
+                    For Current/Voltage: prefers <b>kVA</b> if provided, otherwise uses <b>kW (+PF)</b>.
+                    For kW: uses <b>Voltage + Current (+PF)</b> or <b>HP (+eff)</b>.
+                  </div>
+                  <div className="mt-2 text-xs text-[#4a2412]/70">
+                    If you’re solving for Voltage, the Voltage field is disabled/greyed to prevent confusion (same for any solved field).
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Card>
