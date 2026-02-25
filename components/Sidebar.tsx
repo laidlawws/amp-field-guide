@@ -12,6 +12,7 @@ type Props = {
 const nav = [
   { href: "/", label: "Home" },
   { href: "/reference/ohms-chart", label: "Ohm’s Law Chart" },
+  { href: "/calculators/resistance-network", label: "Resistance Network" },
   { href: "/calculators/power", label: "Power" },
   { href: "/calculators/voltage-drop", label: "Voltage Drop" },
   { href: "/calculators/reactance", label: "C / L / Reactance" },
