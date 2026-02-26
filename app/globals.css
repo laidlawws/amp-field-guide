@@ -1,40 +1,254 @@
 @import "tailwindcss";
 
+/* ==========================================
+   AMP Field Reference — Clean Light Theme (Polished)
+========================================== */
+
 :root {
-  --background: #f7f5f2;
-  --foreground: #4a2412;
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: 245 246 248;
+  --panel: 255 255 255;
+  --card: 255 255 255;
+  --muted-bg: 240 242 245;
+
+  /* Text */
+  --fg: 24 24 28;
+  --fg-muted: 100 105 115;
+
+  /* Borders */
+  --border: 225 228 233;
+
+  /* Brand */
+  --brand: 249 115 22;
+  --brand-2: 245 158 11; /* subtle secondary accent */
+  --brand-soft: 255 235 220;
+
+  /* Radius */
+  --r-xl: 20px;
+  --r-lg: 14px;
+  --r-md: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.04);
+  --shadow-md: 0 10px 28px rgba(0,0,0,0.08);
+  --shadow-lg: 0 18px 50px rgba(0,0,0,0.10);
 }
+
+/* ==========================================
+   Base
+========================================== */
+
+html, body { height: 100%; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  -webkit-font-smoothing: antialiased;
+
+  /* Subtle premium background */
+  background:
+    radial-gradient(900px 600px at 70% 0%, rgba(249,115,22,0.10), transparent 55%),
+    radial-gradient(700px 500px at 20% 15%, rgba(245,158,11,0.07), transparent 55%),
+    rgb(var(--bg));
+
+  color: rgb(var(--fg));
 }
 
-/* App utility classes */
+/* Remove global link color override */
+a { color: inherit; text-decoration: none; }
+
+/* Better default text rhythm */
+p { line-height: 1.55; }
+small { color: rgb(var(--fg-muted)); }
+
+/* Nice selection */
+::selection { background: rgba(249,115,22,0.18); }
+
+/* ==========================================
+   Scrollbar (desktop polish)
+========================================== */
+@media (pointer: fine) {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.18);
+    border-radius: 999px;
+    border: 3px solid rgba(0,0,0,0);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* ==========================================
+   Sidebar
+========================================== */
+
+.sidebar {
+  background: rgb(var(--panel));
+  border-right: 1px solid rgb(var(--border));
+  box-shadow: var(--shadow-sm);
+}
+
+/* Optional: if you have a sidebar header area */
+.sidebar-header {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgb(var(--border));
+}
+
+/* Nav items */
+.nav-item {
+  @apply block px-3 py-2 text-sm font-semibold transition;
+  border-radius: var(--r-md);
+  color: rgb(var(--fg-muted));
+}
+
+.nav-item:hover {
+  background: rgb(var(--muted-bg));
+  color: rgb(var(--fg));
+}
+
+/* ===== ACTIVE STATE (Guaranteed) ===== */
+.nav-item.active,
+.nav-item.active *,
+.sidebar a.active,
+.sidebar a.active *,
+.sidebar [aria-current="page"],
+.sidebar [aria-current="page"] * {
+  background: linear-gradient(135deg, rgb(var(--brand)), rgb(var(--brand-2)));
+  color: #ffffff !important;
+  font-weight: 800;
+  border-radius: var(--r-md);
+  box-shadow: 0 8px 18px rgba(249,115,22,0.18);
+}
+
+/* ==========================================
+   Cards / Tiles
+========================================== */
+
+.card,
+.tile {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--r-xl);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.card:hover,
+.tile:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: rgba(249,115,22,0.22);
+}
+
+/* Card title look */
+.card h1, .card h2, .card h3,
+.tile h1, .tile h2, .tile h3 {
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+}
+
+.sub,
+.card small,
+.tile small {
+  color: rgb(var(--fg-muted));
+}
+
+/* Optional helper: section title */
+.section-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  margin: 0 0 10px 0;
+}
+
+/* Optional helper: subtle badge/pill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(249,115,22,0.12);
+  color: rgb(var(--brand));
+  border: 1px solid rgba(249,115,22,0.18);
+}
+
+/* ==========================================
+   Search / Inputs
+========================================== */
+
+.search-wrapper {
+  background: white;
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--r-xl);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
 .input {
-  @apply w-full p-2.5 rounded-xl border bg-white outline-none;
-  border-color: #e6d2a8;
+  @apply w-full px-3 py-2.5 text-sm outline-none transition;
+  background: white;
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--r-lg);
+}
+
+.input::placeholder {
+  color: rgba(100,105,115,0.75);
 }
 
 .input:focus {
-  box-shadow: 0 0 0 2px #f26422;
+  border-color: rgb(var(--brand));
+  box-shadow: 0 0 0 4px rgba(249,115,22,0.16);
 }
 
+/* Accessible focus style for clickable stuff */
+:where(button, a, input, select, textarea, [role="button"], .nav-item):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(249,115,22,0.18);
+  border-radius: 12px;
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
 .btn {
-  @apply w-full rounded-xl text-white p-2.5 font-extrabold transition;
-  background: #f26422;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-extrabold transition;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgb(var(--brand)), rgb(var(--brand-2)));
+  color: white;
+  box-shadow: 0 10px 22px rgba(249,115,22,0.18);
 }
 
 .btn:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+  box-shadow: 0 14px 30px rgba(249,115,22,0.22);
 }
 
 .btn:active {
-  transform: scale(0.99);
+  transform: translateY(0px) scale(0.99);
 }
 
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ==========================================
+   Small UI
+========================================== */
+
 .kbd {
-  @apply px-2 py-1 rounded-lg border bg-white text-xs font-bold;
-  border-color: #e6d2a8;
+  @apply px-2 py-1 text-xs font-semibold;
+  border-radius: 9px;
+  border: 1px solid rgb(var(--border));
+  background: rgb(var(--muted-bg));
+  color: rgb(var(--fg-muted));
 }
