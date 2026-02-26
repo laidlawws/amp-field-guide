@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+
+  const mainRef = useRef<HTMLElement | null>(null);
+  const pathname = usePathname();
+
+  // Always jump to the top of the scroll container on navigation / refresh
+  useEffect(() => {
+    // two frames helps with mobile Safari + layout shift after navigation
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        mainRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      });
+    });
+  }, [pathname]);
 
   return (
     <div className="h-screen overflow-hidden flex flex-col">
@@ -45,14 +59,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar open={open} setOpen={setOpen} />
 
-        {/* Scrollable content area
-            - Add top padding on mobile to account for fixed header (approx 64px)
-            - No top padding needed on desktop because header is hidden at md+
-        */}
         <main
+          ref={mainRef}
           className="flex-1 overflow-y-auto p-4 sm:p-6 md:ml-72 pt-20 md:pt-6"
           style={{
-            // Big enough to clear iPhone bottom bars + any bounce/toolbar behavior
             paddingBottom: "calc(6rem + env(safe-area-inset-bottom))",
           }}
         >

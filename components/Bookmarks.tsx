@@ -9,7 +9,33 @@ type Bookmark = {
   href: string;
 };
 
+type PageOption = {
+  label: string;
+  href: string;
+  group?: string;
+};
+
 const STORAGE_KEY = "amp_bookmarks_v1";
+
+const PAGE_OPTIONS: PageOption[] = [
+  { group: "Reference", label: "Ohm’s Law Chart", href: "/reference/ohms-chart" },
+  { group: "Reference", label: "Ampacity", href: "/reference/ampacity" },
+  { group: "Reference", label: "Conduit Bending", href: "/reference/conduit" },
+  { group: "Reference", label: "Conduit Fill", href: "/reference/fill" },
+  { group: "Reference", label: "Box Fill", href: "/reference/box-fill" },
+  { group: "Reference", label: "Material Properties", href: "/reference/material-properties" },
+  { group: "Reference", label: "Weights & Measures", href: "/reference/weights-measures" },
+  { group: "Reference", label: "NEC Tables", href: "/reference/tables" },
+
+  { group: "Calculators", label: "Power", href: "/calculators/power" },
+  { group: "Calculators", label: "Voltage Drop", href: "/calculators/voltage-drop" },
+  { group: "Calculators", label: "C / L / Reactance", href: "/calculators/reactance" },
+  { group: "Calculators", label: "Resistance Network", href: "/calculators/resistance-network" },
+  { group: "Calculators", label: "PF Correction", href: "/calculators/pf-correction" },
+  { group: "Calculators", label: "Motor FLC", href: "/calculators/flc" },
+  { group: "Calculators", label: "Transformers", href: "/calculators/transformers" },
+  { group: "Calculators", label: "Conductors in Conduit", href: "/calculators/max-conductors" },
+];
 
 const DEFAULT_BOOKMARKS: Bookmark[] = [
   { id: "ohms", label: "Ohm’s Law Chart", href: "/reference/ohms-chart" },
@@ -32,7 +58,6 @@ function safeParse(json: string | null): Bookmark[] | null {
   try {
     const parsed = JSON.parse(json);
     if (!Array.isArray(parsed)) return null;
-    // minimal validation
     const ok = parsed.every(
       (x) =>
         x &&
@@ -46,43 +71,58 @@ function safeParse(json: string | null): Bookmark[] | null {
   }
 }
 
+function optionLabelForHref(href: string) {
+  return PAGE_OPTIONS.find((p) => p.href === href)?.label ?? href;
+}
+
+function categoryForHref(href: string) {
+  if (href.startsWith("/calculators/")) return "Calculator";
+  if (href.startsWith("/reference/")) return "Reference";
+  return "Page";
+}
+
 export default function Bookmarks() {
   const [items, setItems] = useState<Bookmark[]>(DEFAULT_BOOKMARKS);
   const [editing, setEditing] = useState(false);
 
-  const [label, setLabel] = useState("");
-  const [href, setHref] = useState("");
+  const [selectedHref, setSelectedHref] = useState<string>(PAGE_OPTIONS[0]?.href ?? "/");
+  const [customLabel, setCustomLabel] = useState<string>("");
 
-  // Load from localStorage on first client render
+  // For clean “appear” animation after hydration
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     const saved = safeParse(localStorage.getItem(STORAGE_KEY));
     if (saved && saved.length) setItems(saved);
+    setMounted(true);
   }, []);
 
-  // Persist any changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  const normalizedHref = useMemo(() => {
-    const h = href.trim();
-    if (!h) return "";
-    // Allow internal routes like /calculators/power
-    if (h.startsWith("/")) return h;
-    // Allow https://… links too
-    if (h.startsWith("http://") || h.startsWith("https://")) return h;
-    // Default to internal if user types "reference/tables"
-    return `/${h}`;
-  }, [href]);
+  const groupedOptions = useMemo(() => {
+    const groups = new Map<string, PageOption[]>();
+    for (const opt of PAGE_OPTIONS) {
+      const g = opt.group ?? "Pages";
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g)!.push(opt);
+    }
+    return Array.from(groups.entries());
+  }, []);
+
+  const alreadyAdded = useMemo(() => new Set(items.map((b) => b.href)), [items]);
 
   function addBookmark() {
-    const l = label.trim();
-    const h = normalizedHref;
-    if (!l || !h) return;
+    const href = selectedHref;
+    if (!href) return;
+    if (alreadyAdded.has(href)) return;
 
-    setItems((prev) => [{ id: uid(), label: l, href: h }, ...prev]);
-    setLabel("");
-    setHref("");
+    const defaultLabel = optionLabelForHref(href);
+    const label = customLabel.trim() || defaultLabel;
+
+    setItems((prev) => [{ id: uid(), label, href }, ...prev]);
+    setCustomLabel("");
   }
 
   function remove(id: string) {
@@ -102,37 +142,41 @@ export default function Bookmarks() {
     });
   }
 
-  // Drag & drop (desktop)
-  function onDragStart(e: React.DragEvent, id: string) {
-    e.dataTransfer.setData("text/plain", id);
-    e.dataTransfer.effectAllowed = "move";
-  }
-
-  function onDrop(e: React.DragEvent, targetId: string) {
-    e.preventDefault();
-    const draggedId = e.dataTransfer.getData("text/plain");
-    if (!draggedId || draggedId === targetId) return;
-
-    setItems((prev) => {
-      const from = prev.findIndex((b) => b.id === draggedId);
-      const to = prev.findIndex((b) => b.id === targetId);
-      if (from < 0 || to < 0) return prev;
-
-      const copy = [...prev];
-      const [it] = copy.splice(from, 1);
-      copy.splice(to, 0, it);
-      return copy;
-    });
-  }
-
   function resetDefaults() {
     setItems(DEFAULT_BOOKMARKS);
   }
 
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <div>
+      {/* local styles for animations (self-contained) */}
+      <style>{`
+        @keyframes ampFadeUp {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes ampJiggle {
+          0% { transform: rotate(-0.8deg); }
+          50% { transform: rotate(0.8deg); }
+          100% { transform: rotate(-0.8deg); }
+        }
+        .amp-pill {
+          animation: ampFadeUp 260ms ease-out both;
+          will-change: transform, opacity;
+        }
+        .amp-press {
+          transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+        }
+        .amp-press:active {
+          transform: scale(0.98);
+        }
+        .amp-edit-jiggle {
+          animation: ampJiggle 140ms ease-in-out infinite;
+          transform-origin: 50% 50%;
+        }
+      `}</style>
+
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
           <div className="text-lg font-extrabold">Bookmarks</div>
           <div className="text-sm text-[#4a2412]/70">
             Tap to open. Edit to add/remove/reorder.
@@ -147,35 +191,45 @@ export default function Bookmarks() {
         </button>
       </div>
 
-      {/* Bookmark grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {items.map((b) => (
-          <div
-            key={b.id}
-            draggable={editing}
-            onDragStart={(e) => onDragStart(e, b.id)}
-            onDragOver={(e) => editing && e.preventDefault()}
-            onDrop={(e) => editing && onDrop(e, b.id)}
-            className={`rounded-2xl border border-[#e6d2a8] bg-white p-3 transition ${
-              editing ? "ring-1 ring-[#f26422]/30" : ""
-            }`}
-          >
-            <Link
-              href={b.href}
-              className="block font-extrabold text-[#4a2412] hover:underline"
-              onClick={(e) => {
-                if (editing) e.preventDefault();
-              }}
+      {/* Pill list */}
+      <div className="flex flex-wrap gap-2">
+        {items.map((b, idx) => {
+          const cat = categoryForHref(b.href);
+          return (
+            <div
+              key={b.id}
+              className={[
+                "amp-pill",
+                mounted ? "" : "opacity-0",
+                editing ? "amp-edit-jiggle" : "",
+              ].join(" ")}
+              style={{ animationDelay: `${Math.min(idx, 12) * 35}ms` }}
             >
-              {b.label}
-            </Link>
-            <div className="mt-1 text-xs text-[#4a2412]/60 break-all">
-              {b.href}
-            </div>
+              <Link
+                href={b.href}
+                onClick={(e) => {
+                  if (editing) e.preventDefault();
+                }}
+                className={[
+                  "amp-press inline-flex items-center gap-2 rounded-full border border-[#e6d2a8] bg-white px-3 py-2",
+                  "shadow-[0_1px_0_rgba(0,0,0,0.03)] hover:bg-[#fff7f2]",
+                ].join(" ")}
+              >
+                <span className="inline-flex items-center rounded-full bg-[#f7f5f2] px-2 py-0.5 text-[11px] font-extrabold text-[#4a2412]/80 border border-[#e6d2a8]">
+                  {cat}
+                </span>
 
-            {editing && (
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <div className="flex gap-2">
+                <span className="font-extrabold text-sm text-[#4a2412] whitespace-nowrap">
+                  {b.label}
+                </span>
+
+                {!editing && (
+                  <span className="text-[#f26422] font-extrabold">→</span>
+                )}
+              </Link>
+
+              {editing && (
+                <div className="mt-2 flex items-center gap-2">
                   <button
                     onClick={() => move(b.id, -1)}
                     className="rounded-lg border border-[#e6d2a8] bg-[#f7f5f2] px-2 py-1 text-xs font-extrabold"
@@ -192,19 +246,18 @@ export default function Bookmarks() {
                   >
                     ↓
                   </button>
+                  <button
+                    onClick={() => remove(b.id)}
+                    className="rounded-lg border border-[#e6d2a8] bg-white px-2 py-1 text-xs font-extrabold text-[#f26422] hover:bg-[#fff7f2]"
+                    aria-label="Delete"
+                  >
+                    Delete
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => remove(b.id)}
-                  className="rounded-lg border border-[#e6d2a8] bg-white px-2 py-1 text-xs font-extrabold text-[#f26422]"
-                  aria-label="Delete"
-                >
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Edit panel */}
@@ -212,25 +265,46 @@ export default function Bookmarks() {
         <div className="rounded-2xl border border-[#e6d2a8] bg-white p-4 space-y-3">
           <div className="text-sm font-extrabold">Add bookmark</div>
 
-          <div className="grid sm:grid-cols-3 gap-3">
-            <input
-              className="input"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder="Label (e.g. Motor FLA)"
-            />
-            <input
-              className="input"
-              value={href}
-              onChange={(e) => setHref(e.target.value)}
-              placeholder="Route or URL (e.g. /reference/tables)"
-            />
-            <button
-              onClick={addBookmark}
-              className="rounded-xl bg-[#f26422] text-white px-4 py-2 font-extrabold hover:opacity-90"
-            >
-              Add
-            </button>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="sm:col-span-2 space-y-2">
+              <div className="text-xs font-extrabold text-[#4a2412]">Pick a page</div>
+              <select
+                className="input"
+                value={selectedHref}
+                onChange={(e) => setSelectedHref(e.target.value)}
+              >
+                {groupedOptions.map(([group, opts]) => (
+                  <optgroup key={group} label={group}>
+                    {opts.map((o) => (
+                      <option key={o.href} value={o.href} disabled={alreadyAdded.has(o.href)}>
+                        {alreadyAdded.has(o.href) ? `✓ ${o.label}` : o.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <div className="text-xs text-[#4a2412]/70">
+                Pages already bookmarked are marked with ✓.
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-extrabold text-[#4a2412]">Custom label (optional)</div>
+              <input
+                className="input"
+                value={customLabel}
+                onChange={(e) => setCustomLabel(e.target.value)}
+                placeholder={`Default: ${optionLabelForHref(selectedHref)}`}
+              />
+              <button
+                onClick={addBookmark}
+                disabled={!selectedHref || alreadyAdded.has(selectedHref)}
+                className={`rounded-xl px-4 py-2 font-extrabold text-white transition
+                  ${!selectedHref || alreadyAdded.has(selectedHref) ? "bg-[#f26422]/50 cursor-not-allowed" : "bg-[#f26422] hover:opacity-90"}`}
+              >
+                Add
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
