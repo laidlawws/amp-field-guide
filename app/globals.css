@@ -329,3 +329,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden; /* Prevent whole-page scroll */
+}
+
+.sidebar {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}

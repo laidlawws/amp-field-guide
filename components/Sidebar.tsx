@@ -25,7 +25,7 @@ const nav = [
   { href: "/reference/box-fill", label: "Box Fill" },
   { href: "/calculators/max-conductors", label: "Conductors in Conduit" },
   { href: "/reference/material-properties", label: "Material Properties" },
-  { href: "/reference/tables", label: "NEC Tables" },
+  { href: "/reference/weights-measures", label: "Weights & Measures" },
 ];
 
 export default function Sidebar({ open, setOpen }: Props) {
@@ -43,51 +43,65 @@ export default function Sidebar({ open, setOpen }: Props) {
       />
 
       <aside
-        className={`fixed z-50 md:z-auto md:static top-0 left-0 h-dvh w-72 bg-white 
-        border-r border-[#e6d2a8] p-5 transition-transform md:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`
+          fixed z-50 md:z-auto md:static top-0 left-0
+          w-72 bg-white border-r border-[rgb(var(--border))]
+          transition-transform md:translate-x-0
+          ${open ? "translate-x-0" : "-translate-x-full"}
+        `}
+        style={{
+          height: "100dvh", // correct mobile viewport height (better than 100vh on iOS)
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
+        }}
       >
-        {/* Sidebar Header SVG */}
-        <div className="flex justify-center pb-5 mb-6 border-b border-[#e6d2a8]">
-          <Link href="/" onClick={() => setOpen(false)} className="w-[180px]">
-            <Image
-              src="/amp-header.svg"
-              alt="AMP Field Reference Guide"
-              width={180}
-              height={40}
-              className="w-full h-auto"
-              priority
-            />
-          </Link>
+        {/* Sticky header inside sidebar (mobile + desktop safe) */}
+        <div className="sticky top-0 z-10 bg-white p-5 pb-4 border-b border-[rgb(var(--border))]">
+          <div className="flex justify-center">
+            <Link href="/" onClick={() => setOpen(false)} className="w-[180px]" aria-label="Go home">
+              <Image
+                src="/amp-header.svg"
+                alt="AMP Field Reference Guide"
+                width={180}
+                height={40}
+                className="w-full h-auto"
+                priority
+              />
+            </Link>
+          </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="space-y-1">
-          {nav.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`block rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150
-                  ${
-                    active
-                      ? "bg-[#f26422] text-white shadow-sm"
-                      : "text-[#4a2412] hover:bg-[#f7f5f2] hover:translate-x-[2px]"
-                  }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Scrollable content */}
+        <div className="p-5 pt-4">
+          {/* Navigation */}
+          <nav className="space-y-1">
+            {nav.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`block rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150
+                    ${
+                      active
+                        ? "bg-[rgb(var(--brand))] text-white shadow-sm"
+                        : "text-[rgb(var(--fg))] hover:bg-[rgb(var(--muted-bg))] hover:translate-x-[2px]"
+                    }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-        {/* Tip Section */}
-        <div className="mt-8 text-xs text-[#4a2412]/70 border-t border-[#e6d2a8] pt-4">
-          <div className="font-semibold mb-1">Tip:</div>
-          <div>Use the search on Home to quickly find formulas.</div>
+          {/* Tip Section */}
+          <div className="mt-8 text-xs text-[rgb(var(--fg-muted))] border-t border-[rgb(var(--border))] pt-4">
+            <div className="font-semibold mb-1 text-[rgb(var(--fg))]">Tip:</div>
+            <div>Use the search on Home to quickly find formulas.</div>
+          </div>
         </div>
       </aside>
     </>
