@@ -49,8 +49,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             - Add top padding on mobile to account for fixed header (approx 64px)
             - No top padding needed on desktop because header is hidden at md+
         */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:ml-72 pt-20 md:pt-6">
+        <main
+          className="flex-1 overflow-y-auto p-4 sm:p-6 md:ml-72 pt-20 md:pt-6"
+          style={{
+            // Big enough to clear iPhone bottom bars + any bounce/toolbar behavior
+            paddingBottom: "calc(6rem + env(safe-area-inset-bottom))",
+          }}
+        >
           {children}
+
+          {/* Mobile-only bottom spacer to prevent last content being clipped */}
+          <div className="h-24 md:hidden" aria-hidden="true" />
         </main>
       </div>
     </div>

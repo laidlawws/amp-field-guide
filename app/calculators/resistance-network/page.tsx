@@ -177,19 +177,23 @@ export default function ResistanceNetwork() {
           {/* LEFT: Builder */}
           <div className="space-y-4">
             <div className="rounded-2xl border border-[#e6d2a8] bg-white p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm font-extrabold text-[#4a2412]">Build your circuit</div>
-                  <div className="text-xs text-[#4a2412]/70">
-                    Add resistors and series/parallel groups. Nest groups to represent branches.
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-[#e6d2a8] bg-[#f7f5f2] px-3 py-2">
-                  <div className="text-xs text-[#4a2412]/70">Total R</div>
-                  <div className="font-extrabold text-[#f26422]">{eq.ok ? fmtOhms(eq.R) : "—"}</div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-extrabold text-[#4a2412]">Build your circuit</div>
+                <div className="text-xs text-[#4a2412]/70">
+                  Add resistors and series/parallel groups. Nest groups to represent branches.
                 </div>
               </div>
+
+              <div className="w-full sm:w-auto">
+                <div className="rounded-xl border border-[#e6d2a8] bg-[#f7f5f2] px-3 py-2">
+                  <div className="text-xs text-[#4a2412]/70">Total R</div>
+                  <div className="font-extrabold text-[#f26422] break-words">
+                    {eq.ok ? fmtOhms(eq.R) : "—"}
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
             
             {/* Tree editor */}
@@ -280,7 +284,7 @@ function NodeEditor(props: {
           onClick={() => onSelect(node.id)}
           className="text-left flex-1"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 justify-end">
             <div className={`h-8 w-8 rounded-xl grid place-items-center border ${active ? "border-[#f26422] bg-[#fff7f2]" : "border-[#e6d2a8] bg-[#f7f5f2]"}`}>
               <span className="font-extrabold text-[#4a2412]">{nodeBadge(node.type)}</span>
             </div>
