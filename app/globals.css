@@ -252,3 +252,80 @@ small { color: rgb(var(--fg-muted)); }
   background: rgb(var(--muted-bg));
   color: rgb(var(--fg-muted));
 }
+
+/* ==========================================
+   Mobile "App-like" polish
+========================================== */
+
+/* Prevent iOS text resizing weirdness */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Better touch behavior */
+body {
+  overscroll-behavior: none;          /* less “rubber band” */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Respect iPhone notch / safe areas */
+.safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+
+/* Make taps feel deliberate */
+.btn,
+.nav-item,
+.tile,
+.card {
+  touch-action: manipulation;
+}
+
+/* Bigger tap targets on phones */
+@media (max-width: 640px) {
+  .nav-item,
+  .btn {
+    min-height: 46px;
+  }
+
+  .input {
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .card,
+  .tile {
+    padding: 1rem;
+  }
+}
+
+/* Smooth scrolling areas (if you have scroll panes) */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Subtle “press” feedback like native apps */
+.pressable {
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.pressable:active {
+  transform: scale(0.98);
+}
+
+/* Optional: sticky top bar helper */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(10px);
+  background: rgba(245, 246, 248, 0.75);
+  border-bottom: 1px solid rgb(var(--border));
+}
+
+/* Optional: reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
