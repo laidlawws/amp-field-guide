@@ -25,7 +25,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen overflow-hidden flex flex-col">
       {/* MOBILE HEADER (fixed so it never disappears on mobile) */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 border-b border-[rgb(var(--border))] bg-white shadow-sm">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 border-b border-[rgb(var(--border))] bg-white shadow-sm pt-[env(safe-area-inset-top)]">
         <div className="flex items-center px-4 py-3">
           {/* Left: Menu button */}
           <button

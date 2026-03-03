@@ -4,6 +4,27 @@
    AMP Field Reference — Clean Light Theme (Polished)
 ========================================== */
 
+
+/* iOS safe area support (for notch / dynamic island) */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+/* Give fixed mobile header room below the notch/dynamic island */
+header {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Ensure page content starts below fixed header + safe area */
+main {
+  padding-top: calc(5rem + env(safe-area-inset-top));
+}
+
 :root {
   color-scheme: light;
 
