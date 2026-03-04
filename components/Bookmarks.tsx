@@ -20,8 +20,6 @@ const STORAGE_KEY = "amp_bookmarks_v1";
 const PAGE_OPTIONS: PageOption[] = [
   { group: "Reference", label: "Ohm’s Law Chart", href: "/reference/ohms-chart" },
   { group: "Reference", label: "Ampacity", href: "/reference/ampacity" },
-  { group: "Reference", label: "Conduit Bending", href: "/reference/conduit" },
-  { group: "Reference", label: "Conduit Fill", href: "/reference/fill" },
   { group: "Reference", label: "Box Fill", href: "/reference/box-fill" },
   { group: "Reference", label: "Material Properties", href: "/reference/material-properties" },
   { group: "Reference", label: "Weights & Measures", href: "/reference/weights-measures" },
@@ -42,8 +40,6 @@ const DEFAULT_BOOKMARKS: Bookmark[] = [
   { id: "power", label: "Power", href: "/calculators/power" },
   { id: "vd", label: "Voltage Drop", href: "/calculators/voltage-drop" },
   { id: "ampacity", label: "Ampacity", href: "/reference/ampacity" },
-  { id: "conduit", label: "Conduit Bending", href: "/reference/conduit" },
-  { id: "fill", label: "Conduit Fill", href: "/reference/fill" },
   { id: "boxfill", label: "Box Fill", href: "/reference/box-fill" },
   { id: "tables", label: "NEC Tables", href: "/reference/tables" },
   { id: "react", label: "C / L / Reactance", href: "/calculators/reactance" },
