@@ -362,7 +362,6 @@ export default function WeightsMeasuresThreadsPage() {
         </div>
 
         <div className="sub" style={{ marginTop: 10 }}>
-          Tip: On iPhone, inputs use 16px font to avoid the Safari “auto zoom” behavior.
         </div>
       </div>
 
@@ -574,11 +573,6 @@ export default function WeightsMeasuresThreadsPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <div className="sub" style={{ marginTop: 10 }}>
-            If you want this to be exact by % thread / class, I can add a “% thread” slider and compute tap drill from
-            geometry.
           </div>
         </div>
       </div>
